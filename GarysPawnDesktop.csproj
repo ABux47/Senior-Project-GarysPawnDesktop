@@ -23,13 +23,20 @@
   </PropertyGroup>
   
   <!-- Allow single-file publish (unpackaged) for Release -->
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <WindowsPackageType>None</WindowsPackageType>
-    <PublishSingleFile>true</PublishSingleFile>
-    <SelfContained>true</SelfContained>
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <PublishTrimmed>false</PublishTrimmed>
-  </PropertyGroup>
+<!-- Allow single-file publish (unpackaged) for Release -->
+<PropertyGroup Condition="'$(Configuration)'=='Release'">
+  <WindowsPackageType>None</WindowsPackageType>
+  <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+  <SelfContained>true</SelfContained>
+  <RuntimeIdentifierGraphPath>$(MSBuildExtensionsPath)\Microsoft\WindowsDesktop\$(TargetFrameworkVersion)\RuntimeIdentifierGraph.json</RuntimeIdentifierGraphPath>
+  <PublishSingleFile>true</PublishSingleFile>
+  <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  <PublishTrimmed>false</PublishTrimmed>
+  <!-- Force unpackaged deployment -->
+  <EnableMsixTooling>false</EnableMsixTooling>
+  <GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
+  <AppxPackage>false</AppxPackage>
+</PropertyGroup>
   
   <!--  RESOURCES -->
   <ItemGroup>
