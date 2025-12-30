@@ -48,5 +48,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
   </ItemGroup>
+  
+  <!-- Exclude non-Windows platform code when building Windows-only -->
+  <ItemGroup Condition="'$(TargetFramework)'=='net8.0-windows10.0.19041.0'">
+    <Compile Remove="Platforms\Android\**\*.cs" />
+    <Compile Remove="Platforms\iOS\**\*.cs" />
+    <Compile Remove="Platforms\MacCatalyst\**\*.cs" />
+    <Compile Remove="Platforms\Tizen\**\*.cs" />
+  </ItemGroup>
 
 </Project>
