@@ -34,6 +34,8 @@ jobs:
           -r ${{ matrix.arch }} `
           -p:WindowsPackageType=None `
           -p:PublishSingleFile=true `
+          -p:IncludeNativeLibrariesForSelfExtract=true `
+          -p:IncludeAllContentForSelfExtract=true `
           -p:SelfContained=true `
           -o publish-${{ matrix.arch }}
 
