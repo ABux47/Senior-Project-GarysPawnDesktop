@@ -1,62 +1,53 @@
 name: Build Windows EXEs (x64 + x86)
-
 on:
   push:
-    tags: [ 'v*' ]          # run when you push a tag like v1.2.0
-  workflow_dispatch:        # or trigger manually from Actions tab
+    tags: [ 'v*' ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
-
     strategy:
       matrix:
-        arch: [ win-x64, win-x86 ]   # build both
-
+        arch: [ win-x64, win-x86 ]
     steps:
     - name: Checkout source
       uses: actions/checkout@v4
-
+      
     - name: Setup .NET 8 SDK + MAUI
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-        dotnet-quality: ga
-
+        
     - name: Install MAUI workload (Windows)
-      run: dotnet workload install maui-windows --skip-manifest-update
-
+      run: dotnet workload install maui-windows --source https://api.nuget.org/v3/index.json
+      
     - name: Publish self-contained single-file for ${{ matrix.arch }}
       run: |
         dotnet publish GarysPawnDesktop.csproj `
           -c Release `
           -f net8.0-windows10.0.19041.0 `
           -r ${{ matrix.arch }} `
-          -p:WindowsPackageType=MSIX `
+          -p:WindowsPackageType=None `
           -p:SelfContained=true `
-          -p:GenerateAppInstallerFile=false `
+          -p:PublishSingleFile=true `
+          -p:IncludeNativeLibrariesForSelfExtract=true `
+          -p:PublishTrimmed=false `
           -o publish-${{ matrix.arch }}
-
-
-
-
-
-    # IMPORTANT: upload the ENTIRE publish folder, not just the .exe
+          
     - name: Upload ${{ matrix.arch }} artifact
       uses: actions/upload-artifact@v4
       with:
         name: GarysPawnDesktop-${{ matrix.arch }}
         path: publish-${{ matrix.arch }}/**
-
-    # Zip the publish folder so Releases contain everything needed to run
+        
     - name: Zip publish folder (${{ matrix.arch }})
       run: |
         Compress-Archive -Path publish-${{ matrix.arch }}\* -DestinationPath GarysPawnDesktop-${{ matrix.arch }}.zip
-
+        
     - name: Attach ZIP(s) to GitHub Release
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v2
       with:
         files: |
-          GarysPawnDesktop-win-x64.zip
-          GarysPawnDesktop-win-x86.zip
+          GarysPawnDesktop-*.zip
