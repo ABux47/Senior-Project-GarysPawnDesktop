@@ -28,11 +28,7 @@ jobs:
           -c Release `
           -f net8.0-windows10.0.19041.0 `
           -r ${{ matrix.arch }} `
-          -p:WindowsPackageType=None `
-          -p:SelfContained=true `
-          -p:PublishSingleFile=true `
-          -p:IncludeNativeLibrariesForSelfExtract=true `
-          -p:PublishTrimmed=false `
+          -p:RuntimeIdentifierOverride=${{ matrix.arch }} `
           -o publish-${{ matrix.arch }}
           
     - name: Upload ${{ matrix.arch }} artifact
