@@ -29,14 +29,14 @@ jobs:
     - name: Publish self-contained single-file for ${{ matrix.arch }}
       run: |
         dotnet publish GarysPawnDesktop.csproj `
-        -c Release `
-        -f net8.0-windows10.0.19041.0 `
-        -r ${{ matrix.arch }} `
-        -p:WindowsPackageType=None `
-        -p:PublishSingleFile=true `
-        -p:SelfContained=true `
-        -p:IncludeWindowsRuntime=true `
-        -o publish-${{ matrix.arch }}
+          -c Release `
+          -f net8.0-windows10.0.19041.0 `
+          -r ${{ matrix.arch }} `
+          -p:WindowsPackageType=MSIX `
+          -p:SelfContained=true `
+          -p:GenerateAppInstallerFile=false `
+          -o publish-${{ matrix.arch }}
+
 
 
 
