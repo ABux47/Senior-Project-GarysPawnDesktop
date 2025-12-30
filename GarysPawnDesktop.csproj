@@ -1,61 +1,55 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-
   <!--  WINDOWS BUILD SETTINGS   -->
   <PropertyGroup>
     <!-- One target-framework: Windows 10-plus -->
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
-
     
-      <!-- This is a Windows-only MAUI app -->
-      <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
-
-      <!-- Prevent MAUI from requiring other platform workloads (like Tizen) -->
-      <DisableImplicitWorkloadResolver>true</DisableImplicitWorkloadResolver>
+    <!-- This is a Windows-only MAUI app -->
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <!-- REMOVED: DisableImplicitWorkloadResolver - can break CI builds -->
    
-
     <OutputType>Exe</OutputType>
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
-
     <!-- Turn implicit usings / nullability on, keep CSS off -->
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnableDefaultCssItems>false</EnableDefaultCssItems>
-
     <!-- App metadata -->
     <ApplicationTitle>GarysPawnDesktop</ApplicationTitle>
     <RootNamespace>GarysPawnDesktop</RootNamespace>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>
   </PropertyGroup>
-
+  
   <!-- Allow single-file publish (unpackaged) for Release -->
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <WindowsPackageType>None</WindowsPackageType>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
-
+  
   <!--  RESOURCES -->
   <ItemGroup>
     <!-- Icon & splash (processed once) -->
     <MauiIcon Include="Resources\Images\garys_logo2.png" Color="#ffffff">
       <LogicalName>appicon</LogicalName>
     </MauiIcon>
-
     <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#ffffff" BaseSize="128,128" />
-
     <!-- Other images (exclude the icon) -->
     <MauiImage Include="Resources\Images\**\*.png" Exclude="Resources\Images\garys_logo2.png" />
     <MauiImage Include="Resources\Images\**\*.svg" />
-
     <!-- Fonts & raw assets -->
     <MauiFont Include="Resources\Fonts\*" />
     <MauiAsset Include="Resources\Raw\**\*" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
-
+  
   <!--  DEPENDENCIES   -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.82" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.0.82" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.0.100" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
   </ItemGroup>
   
@@ -66,5 +60,8 @@
     <Compile Remove="Platforms\MacCatalyst\**\*.cs" />
     <Compile Remove="Platforms\Tizen\**\*.cs" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.100" />
+  </ItemGroup>
 </Project>
