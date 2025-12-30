@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: [ win-x64, win-x86 ]   # ← build both
+        arch: [ win-x64, win-x86 ]   # build both
 
     steps:
     - name: Checkout source
@@ -22,9 +22,11 @@ jobs:
       with:
         dotnet-version: 8.0.x
         dotnet-quality: ga
-    - run: dotnet workload install maui-windows
 
-    - name: Publish self-contained single-file for ${{ matrix.arch }}
+    - name: Install MAUI workload (Windows)
+      run: dotnet workload install maui-windows --skip-manifest-update
+
+    - name: Publish (unpackaged) for ${{ matrix.arch }}
       run: |
         dotnet publish GarysPawnDesktop.csproj `
           -c Release `
@@ -34,16 +36,23 @@ jobs:
           -p:PublishSingleFile=true `
           -p:SelfContained=true `
           -o publish-${{ matrix.arch }}
+
+    # IMPORTANT: upload the ENTIRE publish folder, not just the .exe
     - name: Upload ${{ matrix.arch }} artifact
       uses: actions/upload-artifact@v4
       with:
         name: GarysPawnDesktop-${{ matrix.arch }}
-        path: publish-${{ matrix.arch }}/GarysPawnDesktop.exe
+        path: publish-${{ matrix.arch }}/**
 
-    - name: Attach EXE(s) to GitHub Release
+    # Zip the publish folder so Releases contain everything needed to run
+    - name: Zip publish folder (${{ matrix.arch }})
+      run: |
+        Compress-Archive -Path publish-${{ matrix.arch }}\* -DestinationPath GarysPawnDesktop-${{ matrix.arch }}.zip
+
+    - name: Attach ZIP(s) to GitHub Release
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v2
       with:
         files: |
-          publish-win-x64/GarysPawnDesktop.exe
-          publish-win-x86/GarysPawnDesktop.exe
+          GarysPawnDesktop-win-x64.zip
+          GarysPawnDesktop-win-x86.zip
