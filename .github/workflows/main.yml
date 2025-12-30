@@ -26,18 +26,18 @@ jobs:
     - name: Install MAUI workload (Windows)
       run: dotnet workload install maui-windows --skip-manifest-update
 
-    - name: Publish for ${{ matrix.arch }}
+    - name: Publish self-contained single-file for ${{ matrix.arch }}
       run: |
         dotnet publish GarysPawnDesktop.csproj `
           -c Release `
           -f net8.0-windows10.0.19041.0 `
           -r ${{ matrix.arch }} `
           -p:WindowsPackageType=None `
+          -p:PublishSingleFile=true `
           -p:SelfContained=true `
-          -p:PublishSingleFile=false `
-          -p:DebugType=None `
-          -p:DebugSymbols=false `
+          -p:UseWinRTBundled=true `
           -o publish-${{ matrix.arch }}
+
 
 
     # IMPORTANT: upload the ENTIRE publish folder, not just the .exe
