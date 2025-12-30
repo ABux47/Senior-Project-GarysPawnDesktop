@@ -5,6 +5,14 @@
     <!-- One target-framework: Windows 10-plus -->
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 
+    
+      <!-- This is a Windows-only MAUI app -->
+      <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+
+      <!-- Prevent MAUI from requiring other platform workloads (like Tizen) -->
+      <DisableImplicitWorkloadResolver>true</DisableImplicitWorkloadResolver>
+   
+
     <OutputType>Exe</OutputType>
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
